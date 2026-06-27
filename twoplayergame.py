@@ -12,12 +12,20 @@ cblt=pygame.transform.scale(pygame.image.load("pictures/bulletc.png"), (80, 30))
 rblt=pygame.transform.scale(pygame.image.load("pictures/bulletr.png"), (80, 30))
 cop=pygame.transform.flip(cop, True, False)
 border=pygame.Rect(WIDTH//2-10, 0, 20, HEIGHT)
+gamestate="start"
+text=pygame.font.SysFont("Arial", 30)
+healthfont=pygame.font.SysFont("Arial", 40)
+starttext1=text.render("Press space to start\n This is a two player game\n", True, "Green")
+starttext2=text.render("Control the cop with WASD and the robber with arrow keys\n To shoot you use the shift keys", True, "Green")
 def draw(cr, rc, cbullets, rbullets, chealth, rhealth):
     screen.blit(city, (0,0))
     #pygame.draw.rect(screen, "red", rc)
     screen.blit(cop, (cr.x, cr.y))
     screen.blit(rob, (rc.x-70, rc.y-70))
     screen.blit(fence, (border.x, border.y))
+    if gamestate=="start":
+        screen.blit(starttext1, (WIDTH/3, HEIGHT/3))    
+        screen.blit(starttext2, (WIDTH/3, HEIGHT/2))    
     for i in cbullets:
         screen.blit(cblt, (i.x, i.y))
     for i in rbullets:
@@ -74,6 +82,7 @@ def main():
     rbullets=[]
     chealth=10
     rhealth=10
+    winner=None
     while True:
         draw(cr, rc, cbullets, rbullets, chealth, rhealth)
         chealth, rhealth=handlebullets(cr, rc, cbullets, rbullets, chealth, rhealth)
@@ -89,5 +98,10 @@ def main():
                     rbullets.append(g)
         keys=pygame.key.get_pressed()
         handlemovement(cr, rc, keys)
+        if chealth==0:
+            winner="Robber wins"
+        if rhealth==0:
+            winner="Cop wins"
+        
         pygame.display.update()
 main()
